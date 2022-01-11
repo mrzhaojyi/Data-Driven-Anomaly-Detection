@@ -6,3 +6,13 @@ Remaining useful life (RUL) prediction is the study of predicting when something
 ### Example of pictures
 
 ![Pciture Examples](img/pic_sch_01.jpg)
+
+
+
+### Example of tables
+|Method|FD001|FD002|FD003|FD004|Model|
+|:-----:|:-----:|:-----:|:------:|:------:|:-----:|
+|1|2|3|4|5|6|
+|1|2|3|4|5|6|
+|1|2|3|4|5|6|
+|1|2|3|4|5|6|

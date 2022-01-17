@@ -8,7 +8,7 @@ The simplest frequency-domain analysis method used for bearing fault detection i
 
 <div  align="center">    
  <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
- <font size = '18'> Fig.1 Example of Bearing Fault Detection </font> <br />
+ <font size = '12'> Fig.1 Example of Bearing Fault Detection </font> <br />
 </div>
 
 <br />

@@ -8,7 +8,7 @@ The simplest frequency-domain analysis method used for bearing fault detection i
 
 <div  align="center">    
  <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
- <font size = '35'> Fig.1 Example of Bearing Fault Detection </font>
+ <font size = '35'> Fig.1 Example of Bearing Fault Detection </font> <br />
 </div>
 
 
@@ -28,7 +28,3 @@ To overcome FFT problems, unsupervised Machine Learning can be a powerful toolin
 |1|2|3|4|5|6|
 
 
-<div  align="center">    
- <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center />
-</div>
-<center> Example of Bearing Fault Detection </center>

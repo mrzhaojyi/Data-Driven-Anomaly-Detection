@@ -18,7 +18,19 @@ To overcome FFT problems, unsupervised Machine Learning can be a powerful toolin
 # Dataset Preparing
 
 ## Data Source and Description
+In this post we will use Case Western Reserve University dataset. We will take drive end data acquired at a sampling frequency of 48 kHz. The load on the shaft is 1 hp. For this load, there are 10 fault classes:
 
+* C1  : Ball defect (0.007 inch)
+* C2  : Ball defect (0.014 inch)
+* C3  : Ball defect (0.021 inch)
+* C4  : Inner race fault (0.007 inch)
+* C5  : Inner race fault (0.014 inch)
+* C6  : Inner race fault (0.021 inch)
+* C7  : Normal
+* C8  : Outer race fault (0.007 inch, data collected from 6 O'clock position)
+* C9  : Outer race fault (0.014 inch, 6 O'clock)
+* C10 : Outer race fault (0.021 inch, 6 O'clock)
+* 
 <div  align="center">    
  <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
  <font> Fig.2 Data download page of Bearing Data Center </font> <br />
@@ -28,6 +40,7 @@ To overcome FFT problems, unsupervised Machine Learning can be a powerful toolin
 
 
 ## Data Pre-processing
+We will do the sliding-window FFT analysis first for those data and then conduct the dimension reduction
 
 <div  align="center">    
  <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
@@ -37,15 +50,21 @@ To overcome FFT problems, unsupervised Machine Learning can be a powerful toolin
 <br />
 
 # Principal Component Analysis (PCA)
+
+Principal Component Analysis (PCA), one of the most popular dimensionality reduction techniques used in machine learning. Applications of PCA and its variants are ubiquitous. Thus, a through understanding of PCA is considered essential to start one’s journey into machine learning. In this and subsequent posts, we will first briefly discuss relevant theory of PCA. Then we will implement PCA from scratch without using any built-in function. This will give us an idea as to what happens under the hood when a built-in function is called in any software environment. Simultaneously, we will also show how to use built-in commands to obtain results. Finally, we will reproduce the results of a popular paper on PCA. Including all this in a single post will make it very very long. Therefore, the post has been divided into three parts. Readers totally familiar with PCA should read none and leave this page immediately to save their precious time. Other readers, who have a passing knowledge of PCA and want to see different implementations, should pick and choose material from different parts as per their need. Absolute beginners should start with Part-I and work their way through gradually. Beginners are also encouraged to explore the references at the end of this post for further information. Here is the outline of different parts:
+
+
 <div  align="center">    
  <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
  <font> Fig.4 Results of PCA Cluster </font> <br />
 </div>
 
 <br />
-
+Projection using normal PCA doesn't segregate different classes. Sometimes by scaling the data before applying PCA gives better results. Let's try that next.
 
 # Kernel Principal Component Analysis (KPCA)
+
+In the field of multivariate statistics, kernel principal component analysis (kernel PCA)[1] is an extension of principal component analysis (PCA) using techniques of kernel methods. Using a kernel, the originally linear operations of PCA are performed in a reproducing kernel Hilbert space.
 
 <div  align="center">    
  <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
@@ -53,6 +72,8 @@ To overcome FFT problems, unsupervised Machine Learning can be a powerful toolin
 </div>
 
 <br />
+
+This result is slightly better than previous ones but still doesn't separate the data convincingly. So perhaps the data lies on a manifold. So now we will use the t-distributed stochastic neighbor embedding (t-SNE) to segregate it.
 
 # t-distributed Stochastic Neighbor Embedding (t-SNE)
 
@@ -62,18 +83,32 @@ To overcome FFT problems, unsupervised Machine Learning can be a powerful toolin
 </div>
 
 <br />
+t-SNE gives much better result as compared to other techniques. Note that results of t-SNE might slightly vary from iteration to iteration. Also note that 0.007 inch ball defect and 0.014 inch outer race defect faults are over each other. This makes classification of these two fault types difficult. This is in agreement with the results that we have obtained in previous post using SVM.
 
+Until now, we have used three most commonly used techniques for dimensionality reduction. But these three are not the only techniques out there. There are many different techniques for dimensionality reduction. Multidimensional scaling (MDS), Isomap, Locally Linear Embedding (LLE) are a few among those. The results of those are not as convincing as the above three. So we have not included those here. But curious readers are encouraged to apply those techniques. It can be easily implemented using 'Scikit-learn' as the commands are similar to those disscussed above.
 
 # AutoEncoder (AE): Neural network with bottleneck
 
+Autoencoders are an unsupervised learning technique in which we leverage neural networks for the task of representation learning. Specifically, we'll design a neural network architecture such that we impose a bottleneck in the network which forces a compressed knowledge representation of the original input. If the input features were each independent of one another, this compression and subsequent reconstruction would be a very difficult task. However, if some sort of structure exists in the data (ie. correlations between input features), this structure can be learned and consequently leveraged when forcing the input through the network's bottleneck.
+
+
+The simplest architecture for constructing an autoencoder is to constrain the number of nodes present in the hidden layer(s) of the network, limiting the amount of information that can flow through the network. By penalizing the network according to the reconstruction error, our model can learn the most important attributes of the input data and how to best reconstruct the original input from an "encoded" state. Ideally, this encoding will learn and describe latent attributes of the input data.
+
+Because neural networks are capable of learning nonlinear relationships, this can be thought of as a more powerful (nonlinear) generalization of PCA. Whereas PCA attempts to discover a lower dimensional hyperplane which describes the original data, autoencoders are capable of learning nonlinear manifolds (a manifold is defined in simple terms as a continuous, non-intersecting surface). The difference between these two approaches is visualized below.
+
 <div  align="center">    
- <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
- <font> Fig.7 Result of AE Cluster </font> <br />
+ <img src="https://www.jeremyjordan.me/content/images/2018/03/Screen-Shot-2018-03-07-at-8.52.21-AM.png" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
+ <font> Fig.7 Illustration of Autoencoder Compared with PCA </font> <br />
 </div>
 
 <div  align="center">    
  <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
- <font> Fig.8 Comparison between Input Data and Reconstructed Data using AE </font> <br />
+ <font> Fig.8 Result of AE Cluster </font> <br />
+</div>
+
+<div  align="center">    
+ <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
+ <font> Fig.9 Comparison between Input Data and Reconstructed Data using AE </font> <br />
 </div>
 
 
@@ -85,7 +120,7 @@ To overcome FFT problems, unsupervised Machine Learning can be a powerful toolin
 
 
 
-
+This project is inspired by https://biswajitsahoo1111.github.io/project/cbm_codes_open/
 |Method|FD001|FD002|FD003|FD004|Model|
 |:-----:|:-----:|:-----:|:------:|:------:|:-----:|
 |1|2|3|4|5|6|

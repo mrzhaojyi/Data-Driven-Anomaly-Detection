@@ -100,6 +100,7 @@ Because neural networks are capable of learning nonlinear relationships, this ca
  <img src="https://www.jeremyjordan.me/content/images/2018/03/Screen-Shot-2018-03-07-at-8.52.21-AM.png" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
  <font> Fig.7 Illustration of Autoencoder Compared with PCA </font> <br />
 </div>
+<br />
 
 <div  align="center">    
  <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />

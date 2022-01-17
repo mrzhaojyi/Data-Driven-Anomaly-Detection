@@ -11,6 +11,7 @@ The simplest frequency-domain analysis method used for bearing fault detection i
  <font size = '35'> Fig.1 Example of Bearing Fault Detection </font> <br />
 </div>
 
+<br />
 
 To overcome FFT problems, unsupervised Machine Learning can be a powerful tooling to detect the vital difference of the virbaition spectrum induced by bearing fault. In this post, I will focus on the unsupervised machine learning for bearing fault detections. The machine learning algorthms covered in this post are PCA, kernal-PCA, t-SNE and Autoencoders. We will first talk about the data used in this study.
 

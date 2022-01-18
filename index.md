@@ -7,7 +7,7 @@ The simplest frequency-domain analysis method used for bearing fault detection i
 
 
 <div  align="center">    
- <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
+ <img src="img/pic_sch_01.jpg" width = "500" height = "330" alt="Bearing Fault Detection" align=center /> <br />
  <font> Fig.1 Example of Bearing Fault Detection </font> <br />
 </div>
 
@@ -18,115 +18,120 @@ To overcome FFT problems, unsupervised Machine Learning can be a powerful toolin
 # Dataset Preparing
 
 ## Data Source and Description
-In this post we will use Case Western Reserve University dataset. We will take drive end data acquired at a sampling frequency of 48 kHz. The load on the shaft is 1 hp. For this load, there are 10 fault classes:
+In this post we will use the bearing fault dataset from Case Western Reserve University Bearing Data Center. The Bearing virbation data is acquired at a sampling frequency of 48 kHz for the drive end bearing. The load is 1 hp and there are 10 classes need to be studied:
 
+* C0  : Normal
 * C1  : Ball defect (0.007 inch)
 * C2  : Ball defect (0.014 inch)
 * C3  : Ball defect (0.021 inch)
 * C4  : Inner race fault (0.007 inch)
 * C5  : Inner race fault (0.014 inch)
 * C6  : Inner race fault (0.021 inch)
-* C7  : Normal
-* C8  : Outer race fault (0.007 inch, data collected from 6 O'clock position)
-* C9  : Outer race fault (0.014 inch, 6 O'clock)
-* C10 : Outer race fault (0.021 inch, 6 O'clock)
-* 
+* C7  : Outer race fault (0.007 inch, data collected from 6 O'clock position)
+* C8  : Outer race fault (0.014 inch, 6 O'clock)
+* C9 : Outer race fault (0.021 inch, 6 O'clock)
+One can check my [jupyternote book]("https://github.com/mrzhaojyi/Data-Driven-Anomaly-Detection/blob/main/notebooks/downloading_CWRU.ipynb") for more details on the Data Acquisition.
+
 <div  align="center">    
- <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
- <font> Fig.2 Data download page of Bearing Data Center </font> <br />
+ <img src="img/pic_1_data.jpg" width = "600" height = "320" alt="Data Source" align=center /> <br />
+ <font> Fig.2 Data download page of Bearing Data Center </font>
+ <a href="https://engineering.case.edu/bearingdatacenter/download-data-file">[source]</a>
 </div>
+
 
 <br />
 
 
-## Data Pre-processing
-We will do the sliding-window FFT analysis first for those data and then conduct the dimension reduction
+## Data Pre-processing using Sliding-window FFT
+We conduct the sliding-window FFT transformation first for those data before the machine learning. Note the axias ticks represents the number of data points. X axis is the frequency and the maximum frequency is 48k Hz. Y axis is the time where the overlap ratio of the FFT sliding window is 0.01. Note the FFT size is 4000. So, it is a very high dimension dataset. One can check my jupyternote book for [more details]("https://github.com/mrzhaojyi/Data-Driven-Anomaly-Detection/blob/main/notebooks/load_saved_data_cleaned.ipynb").
 
 <div  align="center">    
- <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
+ <img src="img/pic_2_data_fft.jpg" width = "600" height = "230" alt="fft" align=center /> <br />
  <font> Fig.3 Transform Time Domain Vibration Signal to Time-Frequency Domain </font> <br />
 </div>
 
 <br />
 
-# Principal Component Analysis (PCA)
-
-Principal Component Analysis (PCA), one of the most popular dimensionality reduction techniques used in machine learning. Applications of PCA and its variants are ubiquitous. Thus, a through understanding of PCA is considered essential to start one’s journey into machine learning. In this and subsequent posts, we will first briefly discuss relevant theory of PCA. Then we will implement PCA from scratch without using any built-in function. This will give us an idea as to what happens under the hood when a built-in function is called in any software environment. Simultaneously, we will also show how to use built-in commands to obtain results. Finally, we will reproduce the results of a popular paper on PCA. Including all this in a single post will make it very very long. Therefore, the post has been divided into three parts. Readers totally familiar with PCA should read none and leave this page immediately to save their precious time. Other readers, who have a passing knowledge of PCA and want to see different implementations, should pick and choose material from different parts as per their need. Absolute beginners should start with Part-I and work their way through gradually. Beginners are also encouraged to explore the references at the end of this post for further information. Here is the outline of different parts:
-
+Once we complete sliding-window FFT for all the 10 classes and also normalize them into 0-1, we have our input data for this stduy as shown in Fig. 4.
 
 <div  align="center">    
- <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
- <font> Fig.4 Results of PCA Cluster </font> <br />
+ <img src="img/pic_3_data_fft_all.jpg" width = "600" height = "430" alt="fft_all" align=center /> <br />
+ <font> Fig.4 Bearing Fault Data for the 10 Classes (c0 - c9) </font> <br />
 </div>
 
 <br />
-Projection using normal PCA doesn't segregate different classes. Sometimes by scaling the data before applying PCA gives better results. Let's try that next.
+
+
+Note the following analysis can be found in [my notebook](https://github.com/mrzhaojyi/Data-Driven-Anomaly-Detection/blob/main/notebooks/unsupervised_ML.ipynb).
+
+# Principal Component Analysis (PCA)
+
+Principal Component Analysis (PCA) is one of the most popular dimensionality reduction techniques used in machine learning. PCA transforms a large set of variables into a smaller one that still contains most of the information in the large set. The dimension reduction using PCA is shown as below:
+
+
+<div  align="center">    
+ <img src="img/Fig4PCA result.jpg" width = "600" height = "350" alt="PCA" align=center /> <br />
+ <font> Fig.5 Results of PCA Cluster </font> <br />
+</div>
+
+<br />
+From the Fig.4, it can be seen PCA can segregate different classes to certain degree. However, some classes are still mixed together. For example, 'Outer race 0.007 inch' are right inside the 'Outer race 0.021 inch'. Let's move to the next algorithm.
 
 # Kernel Principal Component Analysis (KPCA)
 
-In the field of multivariate statistics, kernel principal component analysis (kernel PCA)[1] is an extension of principal component analysis (PCA) using techniques of kernel methods. Using a kernel, the originally linear operations of PCA are performed in a reproducing kernel Hilbert space.
+Kernel principal component analysis (kernel PCA) is an extension of principal component analysis (PCA) using techniques of kernel methods. Using a kernel, the originally linear operations of PCA are performed in a reproducing kernel Hilbert space.
 
 <div  align="center">    
- <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
- <font> Fig.5 Results of KPCA Cluster </font> <br />
+ <img src="img/Fig5 KPCA result.jpg" width = "600" height = "350" alt="KPCA" align=center /> <br />
+ <font> Fig.6 Results of KPCA Cluster </font> <br />
 </div>
 
 <br />
 
-This result is slightly better than previous ones but still doesn't separate the data convincingly. So perhaps the data lies on a manifold. So now we will use the t-distributed stochastic neighbor embedding (t-SNE) to segregate it.
+This result is slightly better than previous ones and no overlap of classes was observed. However, it is still not good enough since the clusters are still very close to each other. Next, we will try the t-distributed stochastic neighbor embedding (t-SNE).
 
 # t-distributed Stochastic Neighbor Embedding (t-SNE)
 
+t-distributed stochastic neighbor embedding (t-SNE) is a statistical method for visualizing high-dimensional data by giving each datapoint a location in a two or three-dimensional map. It is based on Stochastic Neighbor Embedding originally developed by Sam Roweis and Geoffrey Hinton, where Laurens van der Maaten proposed the t-distributed variant. Note the t-SNE does not learn distribution function from the given data, so it is usually used for visualization-only.
+
 <div  align="center">    
- <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
- <font> Fig.6 Results of t-SNE Cluster</font> <br />
+ <img src="img/Fig6 tSNE result.jpg" width = "600" height = "350" alt="tSNE" align=center /> <br />
+ <font> Fig.7 Results of t-SNE Cluster</font> <br />
 </div>
 
 <br />
-t-SNE gives much better result as compared to other techniques. Note that results of t-SNE might slightly vary from iteration to iteration. Also note that 0.007 inch ball defect and 0.014 inch outer race defect faults are over each other. This makes classification of these two fault types difficult. This is in agreement with the results that we have obtained in previous post using SVM.
+t-SNE gives incredible better result as compared to PCA and KPCA. However, since the t-SNE does not learn distribution function from the given data, so it is usually used for visualization-only. Thus, it is difficult to consider t-SNE as an unsupervised machine learning to Bearing Fault.
 
-Until now, we have used three most commonly used techniques for dimensionality reduction. But these three are not the only techniques out there. There are many different techniques for dimensionality reduction. Multidimensional scaling (MDS), Isomap, Locally Linear Embedding (LLE) are a few among those. The results of those are not as convincing as the above three. So we have not included those here. But curious readers are encouraged to apply those techniques. It can be easily implemented using 'Scikit-learn' as the commands are similar to those disscussed above.
+Until now, we have covered PCA, KPCA, t-SNE. There are still many different techniques for dimensionality reduction, like Multidimensional scaling (MDS), Isomap, Locally Linear Embedding (LLE). However, the author would like to jump into the next candidate, Autoencoder, which is belong to the Neural Network faimily.
 
 # AutoEncoder (AE): Neural network with bottleneck
 
-Autoencoders are an unsupervised learning technique in which we leverage neural networks for the task of representation learning. Specifically, we'll design a neural network architecture such that we impose a bottleneck in the network which forces a compressed knowledge representation of the original input. If the input features were each independent of one another, this compression and subsequent reconstruction would be a very difficult task. However, if some sort of structure exists in the data (ie. correlations between input features), this structure can be learned and consequently leveraged when forcing the input through the network's bottleneck.
-
-
-The simplest architecture for constructing an autoencoder is to constrain the number of nodes present in the hidden layer(s) of the network, limiting the amount of information that can flow through the network. By penalizing the network according to the reconstruction error, our model can learn the most important attributes of the input data and how to best reconstruct the original input from an "encoded" state. Ideally, this encoding will learn and describe latent attributes of the input data.
-
-Because neural networks are capable of learning nonlinear relationships, this can be thought of as a more powerful (nonlinear) generalization of PCA. Whereas PCA attempts to discover a lower dimensional hyperplane which describes the original data, autoencoders are capable of learning nonlinear manifolds (a manifold is defined in simple terms as a continuous, non-intersecting surface). The difference between these two approaches is visualized below.
-
+Autoencoders are an unsupervised learning technique where we apply neural networks for the task of representation learning. The Autoencoders we implemented here is one of the simplest Autoencoders, which is usually called as undercomplete autoencoder. It constrain the number of nodes present in the hidden layer(s) of the network, limiting the amount of information that can flow through the network. The cost function of this autoencoder is the difference between the input data and output data. The AE structure can be described using the follow figure.
+<br />
 <div  align="center">    
- <img src="https://www.jeremyjordan.me/content/images/2018/03/Screen-Shot-2018-03-07-at-8.52.21-AM.png" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
- <font> Fig.7 Illustration of Autoencoder Compared with PCA </font> <br />
+<img src="img/Fig7_autoencoder.jpg" width = "600" height = "230" alt="AE_demon" align=center /> <br />
+ <font> Fig.8 Illustration of Autoencoder Structure</font> <br />
 </div>
 <br />
 
-<div  align="center">    
- <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
- <font> Fig.8 Result of AE Cluster </font> <br />
-</div>
+
+Because neural networks with hidden layers are capable of learning nonlinear relationships, this can be thought of as a more powerful (nonlinear) generalization of PCA. An autoencoder without hidden layer is equivalent to PCA. As you can see from the AE structure, the encoder of the AE can reduce the dimension of the data from 4000 to 2. The cluster of difference classes are shown below. 
 
 <div  align="center">    
- <img src="img/pic_sch_01.jpg" width = "500" height = "400" alt="Bearing Fault Detection" align=center /> <br />
- <font> Fig.9 Comparison between Input Data and Reconstructed Data using AE </font> <br />
+ <img src="img/Fig8a_encoded_image.jpg" width = "600" height = "350" alt="Bearing Fault Encoded" align=center /> <br />
+ <font> Fig.9 Result of AE Clustering (encoded bearing faault) </font> <br />
+</div>
+
+AE gives a very good saperating for different classes. Unlike the t-SNE, AE have obtained the distribution function of the given dataset. After training, the encoder part of the AE can be used to identify the potential fault during the real time condition monitor. 
+
+On the other hand, the decoder part of the converged AE can unzip the latent code (bottle-neck) and reproduce the original input, which is the vibration signal in this case. Some discrepancy may still exists between the input and output. But, as long as it preserves the presentative feature, it provided sufficient capability to learn the data distribution function.
+
+<div  align="center">    
+ <img src="img/Fig8_image_rebuild.jpg" width = "680" height = "300" alt="ae_reconstructe" align=center /> <br />
+ <font> Fig.10 Comparison between Input Data and Reconstructed Data using AE </font> <br />
 </div>
 
 
 
 <br />
-
-
-### Example of tables
-
-
-
-This project is inspired by https://biswajitsahoo1111.github.io/project/cbm_codes_open/
-|Method|FD001|FD002|FD003|FD004|Model|
-|:-----:|:-----:|:-----:|:------:|:------:|:-----:|
-|1|2|3|4|5|6|
-|1|2|3|4|5|6|
-|1|2|3|4|5|6|
-|1|2|3|4|5|6|
-
 

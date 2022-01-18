@@ -30,7 +30,9 @@ In this post we will use the bearing fault dataset from Case Western Reserve Uni
 * C7  : Outer race fault (0.007 inch, data collected from 6 O'clock position)
 * C8  : Outer race fault (0.014 inch, 6 O'clock)
 * C9 : Outer race fault (0.021 inch, 6 O'clock)
-One can check my [jupyternote book]("https://github.com/mrzhaojyi/Data-Driven-Anomaly-Detection/blob/main/notebooks/downloading_CWRU.ipynb") for more details on the Data Acquisition.
+<br />
+
+One can check my  [jupyternote book]("https://github.com/mrzhaojyi/Data-Driven-Anomaly-Detection/blob/main/notebooks/downloading_CWRU.ipynb") for more details on the Data Acquisition.
 
 <div  align="center">    
  <img src="img/pic_1_data.jpg" width = "600" height = "320" alt="Data Source" align=center /> <br />

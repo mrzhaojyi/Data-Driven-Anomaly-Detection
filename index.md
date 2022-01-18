@@ -18,7 +18,7 @@ To overcome FFT problems, unsupervised Machine Learning can be a powerful toolin
 # Dataset Preparing
 
 ## Data Source and Description
-In this post we will use the bearing fault dataset from Case Western Reserve University Bearing Data Center. The Bearing virbation data is acquired at a sampling frequency of 48 kHz for the drive end bearing. The load is 1 hp and there are 10 classes need to be studied:
+In this post we will use the bearing fault dataset from Case Western Reserve University Bearing Data Center. The Bearing vibration data is acquired at a sampling frequency of 48 kHz for the drive end bearing. The load is 1 hp and there are 10 classes need to be studied:
 
 * C0  : Normal
 * C1  : Ball defect (0.007 inch)
@@ -30,9 +30,7 @@ In this post we will use the bearing fault dataset from Case Western Reserve Uni
 * C7  : Outer race fault (0.007 inch, data collected from 6 O'clock position)
 * C8  : Outer race fault (0.014 inch, 6 O'clock)
 * C9 : Outer race fault (0.021 inch, 6 O'clock)
-<br />
-
-One can check my  [jupyternote book]("https://github.com/mrzhaojyi/Data-Driven-Anomaly-Detection/blob/main/notebooks/downloading_CWRU.ipynb") for more details on the Data Acquisition.
+One can check my [jupyternote book]("https://github.com/mrzhaojyi/Data-Driven-Anomaly-Detection/blob/main/notebooks/downloading_CWRU.ipynb") for more details on the Data Acquisition.
 
 <div  align="center">    
  <img src="img/pic_1_data.jpg" width = "600" height = "320" alt="Data Source" align=center /> <br />
@@ -45,7 +43,7 @@ One can check my  [jupyternote book]("https://github.com/mrzhaojyi/Data-Driven-A
 
 
 ## Data Pre-processing using Sliding-window FFT
-We conduct the sliding-window FFT transformation first for those data before the machine learning. Note the axias ticks represents the number of data points. X axis is the frequency and the maximum frequency is 48k Hz. Y axis is the time where the overlap ratio of the FFT sliding window is 0.01. Note the FFT size is 4000. So, it is a very high dimension dataset. One can check my jupyternote book for [more details]("https://github.com/mrzhaojyi/Data-Driven-Anomaly-Detection/blob/main/notebooks/load_saved_data_cleaned.ipynb").
+We conduct the sliding-window FFT transformation first for those data before the machine learning. Note the axias ticks represents the number of data points. X axis is the frequency and the maximum frequency is 48k Hz. Y axis is the number of sliding-window and overlap ratio of the FFT sliding window is 0.01. Note the FFT size is 4000. So, it is a very high dimension dataset. One can check my jupyternote book for [more details]("https://github.com/mrzhaojyi/Data-Driven-Anomaly-Detection/blob/main/notebooks/load_saved_data_cleaned.ipynb").
 
 <div  align="center">    
  <img src="img/pic_2_data_fft.jpg" width = "600" height = "230" alt="fft" align=center /> <br />
@@ -54,7 +52,7 @@ We conduct the sliding-window FFT transformation first for those data before the
 
 <br />
 
-Once we complete sliding-window FFT for all the 10 classes and also normalize them into 0-1, we have our input data for this stduy as shown in Fig. 4.
+Once we complete sliding-window FFT for all the 10 classes and also normalize them into 0-1, we have our input data for this study as shown in Fig. 4.
 
 <div  align="center">    
  <img src="img/pic_3_data_fft_all.jpg" width = "600" height = "430" alt="fft_all" align=center /> <br />
@@ -77,7 +75,7 @@ Principal Component Analysis (PCA) is one of the most popular dimensionality red
 </div>
 
 <br />
-From the Fig.4, it can be seen PCA can segregate different classes to certain degree. However, some classes are still mixed together. For example, 'Outer race 0.007 inch' are right inside the 'Outer race 0.021 inch'. Let's move to the next algorithm.
+From the Fig.5, it can be seen PCA can segregate different classes to certain degree. However, some classes are still mixed together. For example, 'Outer race 0.007 inch' are right inside the 'Outer race 0.021 inch'. Let's move to the next algorithm.
 
 # Kernel Principal Component Analysis (KPCA)
 
@@ -102,9 +100,9 @@ t-distributed stochastic neighbor embedding (t-SNE) is a statistical method for 
 </div>
 
 <br />
-t-SNE gives incredible better result as compared to PCA and KPCA. However, since the t-SNE does not learn distribution function from the given data, so it is usually used for visualization-only. Thus, it is difficult to consider t-SNE as an unsupervised machine learning to Bearing Fault.
+t-SNE gives incredible better result as compared to PCA and KPCA. However, since the t-SNE does not learn distribution function from the given data, so it is usually used for visualization-only. Thus, it is difficult to consider t-SNE as an unsupervised machine learning for the task of Bearing Fault Detection.
 
-Until now, we have covered PCA, KPCA, t-SNE. There are still many different techniques for dimensionality reduction, like Multidimensional scaling (MDS), Isomap, Locally Linear Embedding (LLE). However, the author would like to jump into the next candidate, Autoencoder, which is belong to the Neural Network faimily.
+Until now, we have covered PCA, KPCA, t-SNE. There are still many different techniques for dimensionality reduction, like Multidimensional scaling (MDS), Isomap, Locally Linear Embedding (LLE). However, the author would like to jump into the next strong candidate, Autoencoder, which is belong to the Neural Network faimily.
 
 # AutoEncoder (AE): Neural network with bottleneck
 
@@ -121,12 +119,12 @@ Because neural networks with hidden layers are capable of learning nonlinear rel
 
 <div  align="center">    
  <img src="img/Fig8a_encoded_image.jpg" width = "600" height = "350" alt="Bearing Fault Encoded" align=center /> <br />
- <font> Fig.9 Result of AE Clustering (encoded bearing faault) </font> <br />
+ <font> Fig.9 Result of AE Clustering (encoded bearing fault) </font> <br />
 </div>
 
 AE gives a very good saperating for different classes. Unlike the t-SNE, AE have obtained the distribution function of the given dataset. After training, the encoder part of the AE can be used to identify the potential fault during the real time condition monitor. 
 
-On the other hand, the decoder part of the converged AE can unzip the latent code (bottle-neck) and reproduce the original input, which is the vibration signal in this case. Some discrepancy may still exists between the input and output. But, as long as it preserves the presentative feature, it provided sufficient capability to learn the data distribution function.
+On the other hand, the decoder part of the converged AE can unzip the latent code (bottle-neck) and reproduce the original input, which is the vibration signal in this case. Some discrepancy may still exists between the input and reconstructed output. But, as long as it preserves the presentative feature, it provided sufficient capability to learn the data distribution function.
 
 <div  align="center">    
  <img src="img/Fig8_image_rebuild.jpg" width = "680" height = "300" alt="ae_reconstructe" align=center /> <br />
@@ -136,4 +134,3 @@ On the other hand, the decoder part of the converged AE can unzip the latent cod
 
 
 <br />
-
